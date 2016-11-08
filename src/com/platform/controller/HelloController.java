@@ -5,12 +5,16 @@ import java.util.List;
 import net.sf.json.JSONObject;
 import com.jfinal.core.Controller;
 import com.platform.entities.FolderNode;
+import com.platform.entities.VolumeEntity;
 import com.platform.form.baseForm;
+import com.platform.utils.Constant;
 
 public class HelloController extends Controller {
 	
 	public void index() {
-		renderText("hello jfinal index !");
+		setAttr("volumeList", (List<VolumeEntity>)Constant.allVolumeInfo.getData());
+		render("/index/index.jsp");
+//		renderText("hello jfinal index !");
 	}
 	
 	public void tojson() {

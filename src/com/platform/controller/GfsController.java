@@ -60,7 +60,7 @@ public class GfsController extends Controller {
 			List<VolumeEntity> volumes = (List<VolumeEntity>) (Constant.allVolumeInfo.getData());
 			List<MyThread> myThreads = new ArrayList<MyThread>();
 			for (VolumeEntity one : volumes) {
-				MyThread myThread3 = new MyThread(new VolumeInfo(), "setOneVolumeData", one.getName(),
+				MyThread myThread3 = new MyThread(new VolumeInfo(), "setAllVolumeData", one.getName(),
 						Constant.allVolumeInfo);
 				myThread3.execFunction(Constant.allVolumeInfo);
 //				myThreads.add(myThread3);
@@ -273,6 +273,7 @@ public class GfsController extends Controller {
 		int resCode = setVolume.stopVolume(volumeName, resData);
 		resData.setData(resCode);
 		JSONObject jsondata = JSONObject.fromObject(resData);
+//		System.out.println(jsondata.toString());
 		renderJson(jsondata);
 	}
 

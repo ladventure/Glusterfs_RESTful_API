@@ -19,10 +19,6 @@ import com.platform.entities.PostData;
 import com.platform.utils.Constant;
 import com.platform.utils.MyProcess;
 import com.platform.utils.MyThread;
-import com.platform.utils.ProcessMyUtil;
-import com.platform.utils.getTreeDataByPath;
-
-
 import ch.ethz.ssh2.Connection;
 
 /**
@@ -33,7 +29,7 @@ import ch.ethz.ssh2.Connection;
  * @since     [产品/模块版本]
  */
 public class ClusterInfo {
-	ProcessMyUtil proMy = new ProcessMyUtil();
+	
 	private final Logger log = Logger.getLogger("");
 	
 	public void controllerGetClusterInfo(int timeout) {
@@ -134,82 +130,8 @@ public class ClusterInfo {
 	 * @see [类、类#方法、类#成员]
 	 */
 	public Map<String, String> getClusterInfo() {
-//		log.info("get cluster info");
-		Map<String, String> peerIps = new HashMap<String, String>();
-		peerIps.put(Constant.hostIp, Constant.peerincluster_connected);
-		List<String> reStrings = proMy.execCmdWaitAcquiescent(Constant.glusterPeerStatus);
-		if (reStrings == null) {
-			log.error("1101 command get result is null");
-			return null;
-		}
-		if (reStrings.size() == 0) {
-			log.error("1102 command get result is nothing");
-			return null;
-		}
-		
-		if (reStrings.get(0).contains("No peers present")) {
-			return peerIps;
-		}
-		
-		if (!(reStrings.get(0).split(":")[0].contains("Number of Peers"))) {
-			log.error("1103 get result string wrong");
-			return null;
-		}
-		
-
-		// System.out.print(reStrings.get(0));
-
-		int flag = 0;
-		String ipString = "";
-		String state = "";
-		for (Iterator it2 = reStrings.iterator(); it2.hasNext();) {
-			String line = (String) it2.next();
-			line=line.replaceAll(" +", " ");
-			String keyValue[] = line.split(":");
-			if (keyValue[0].equals("Hostname")) {
-
-				if (keyValue.length < 2) {
-					log.error("1105 command get result is wrong");
-					continue;
-				}
-
-				ipString = keyValue[1].replaceAll(" ", "");
-				flag = 1;
-			} else if (flag == 1 && keyValue[0].equals("State")) {
-
-				if (keyValue.length < 2) {
-					log.error("1106 command get result is wrong");
-					continue;
-				}
-
-				state = keyValue[1].replaceAll(" ", "");
-				flag = 0;
-				peerIps.put(ipString, state);
-			}
-
-		}
-		
-//		for (Map.Entry<String, String> entry:peerIps.entrySet()){
-//			String key=entry.getKey();
-//			if(key.equals(Constant.hostIp)){
-//				continue;
-//			}
-//			String value=entry.getValue();
-//			if(Constant.ganymedSSH.otherConns==null){
-//				Constant.ganymedSSH.otherConns=new HashMap<String,Connection>();
-//			}
-//			if(!Constant.ganymedSSH.otherConns.containsKey(key)){
-//				Connection connection=null;
-//				try {
-//					connection = Constant.ganymedSSH.getOpenedConnection(key, Constant.rootUser, Constant.rootPasswd, Constant.port);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				Constant.ganymedSSH.otherConns.put(key,connection);
-//			}
-//		}
-		
+		log.info("get cluster info");
+		Map<String, String> peerIps = (Map<String, String>)Constant.clusterInfo.getData();
 		return peerIps;
 	}
  

@@ -44,8 +44,6 @@ public class RemoveData {
 		return 1;
 	}
 	
-	
-	
    
 	@Test
 	public void testDeleteFolderFiles() {

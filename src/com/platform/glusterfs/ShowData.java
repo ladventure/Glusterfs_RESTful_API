@@ -12,12 +12,10 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 
 import com.platform.utils.Constant;
-import com.platform.utils.ProcessMyUtil;
 
 
 public class ShowData {
 	
-	ProcessMyUtil proMy = new ProcessMyUtil();
 	
 	public static Logger log =   Logger.getLogger ( ShowData.class); 
 
@@ -48,7 +46,7 @@ public class ShowData {
 	 * @return
 	 */
 	public Map<String,String> showFolderData(String folderName){
-//		log.info(" start get "+folderName+" data");		
+		log.info("get "+folderName+" data");		
 
 
 		Map<String,String> data_type=new HashMap<String, String>();
@@ -58,7 +56,7 @@ public class ShowData {
 		 * RunCommand runCommand=new RunCommand(); List<String>
 		 * reStrings=runCommand.runCommandWait(command);
 		 */
-		List<String> reStrings = proMy.execCmdWaitAcquiescent(command);
+		List<String> reStrings = Constant.execCmdObject.execCmdWaitAcquiescent(command);
 		if (reStrings == null) {
 			log.error("2101 command get result is null");
 			return null;
@@ -100,10 +98,10 @@ public class ShowData {
 	 * @see [类、类#方法、类#成员]
 	 */
 	public long getFolderSize(String folderPath) {
-//		log.info("get " + folderPath + " Size ");
+		log.info("get " + folderPath + " Size ");
 
 		String command = "du -k -d 0 "+folderPath+" | grep  " + folderPath + "|awk  \'{print $1}\'";
-		List<String> reStrings = proMy.execCmdWaitAcquiescent(command);
+		List<String> reStrings = Constant.execCmdObject.execCmdWaitAcquiescent(command);
 		if(reStrings==null || reStrings.size()==0){
 			log.error("get " + folderPath + " Size error!");
 			return -2;

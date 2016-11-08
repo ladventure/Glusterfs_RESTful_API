@@ -25,7 +25,10 @@ import com.jfinal.config.Routes;
 import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.platform.controller.GfsController;
+import com.platform.controller.GfsData;
 import com.platform.controller.HelloController;
+import com.platform.data.OperateData;
+import com.platform.data.TaskOperateData;
 import com.platform.entities.PostData;
 import com.platform.entities.VolumeEntity;
 import com.platform.glusterfs.ClusterInfo;
@@ -49,15 +52,17 @@ import com.platform.utils.MyThread;
 public class JfinalConfig extends JFinalConfig{
 	@Override
 	public void configConstant(Constants me) {
-		
+		System.out.println(getClass().getResource("").toString());
 		PropKit.use("a_little_config.txt");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
 		Constant.hostIp=PropKit.get("hostIp");
 		Constant.rootPasswd=PropKit.get("rootPasswd");
 		Constant.port=PropKit.getInt("port");
+		Constant.localMode=PropKit.getBoolean("localMode");
+		Constant.tomcatPort=PropKit.getInt("tomcatPort");
 		Constant.allVolumeInfo=new PostData(new ArrayList<VolumeEntity>());
 		Constant.clusterInfo=new PostData(new HashMap<String,String>());
-		if(PropKit.getBoolean("localMode")){
+		if(Constant.localMode){
 		Constant.execCmdObject=new MyProcess();
 		}else {
 		Constant.execCmdObject = new GanymedSSH(Constant.hostIp, Constant.rootUser, Constant.rootPasswd, Constant.port);	
@@ -81,6 +86,7 @@ public class JfinalConfig extends JFinalConfig{
 	public void configRoute(Routes me) {
 		me.add("/hello", HelloController.class);
 		me.add("/gfs", GfsController.class);
+		me.add("/data",GfsData.class);
 	}
 	
 	@Override
@@ -105,6 +111,7 @@ public class JfinalConfig extends JFinalConfig{
 		// TODO Auto-generated method stub
 		super.beforeJFinalStop();
 		new SetCluster().saveMoutRecord(Constant.mountRecords, Constant.MountRecordPath);
+		new TaskOperateData().saveOperateDataTask(Constant.copyDataTask, Constant.copyDataTaskFilePath);
 	}
 	public static void main(String[] args) {
 		JFinal.start("WebRoot", 80, "/", 5);

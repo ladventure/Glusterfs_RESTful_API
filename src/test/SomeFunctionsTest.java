@@ -61,9 +61,9 @@ public class SomeFunctionsTest {
 		return new_str;
 	}
 
-	@Test
+//	@Test
 	public void urlEndecodeTest() {
-		String src = "lili_test1-0-distributed-192@168@0@110:/lili_test1~192@168@0@116:/lili_test1-/home/lili_test1_point";
+		String src = "/home/jdk-8u101-linux-x64@tar@gz";
 		try {
 			String dst_utf8 = URLEncoder.encode(src, "utf-8");
 			System.out.println(dst_utf8);
@@ -75,4 +75,6 @@ public class SomeFunctionsTest {
 		}
 
 	}
+	
+//	public
 }
