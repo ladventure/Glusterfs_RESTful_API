@@ -33,9 +33,9 @@ import net.sf.json.JSONObject;
 
 public abstract class OperateData {
 	public Logger log =   Logger.getLogger ( OperateData.class); 
-	protected String sourceName;
-	protected String destName;
-	protected String removeName;
+//	protected String sourceName;
+//	protected String destName;
+//	protected String removeName;
 //	/**
 //	 * <一句话功能简述>
 //	 * <功能详细描述>

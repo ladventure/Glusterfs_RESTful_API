@@ -86,7 +86,7 @@ public class CheckoutMD5 {
 			if (!(dest_md5.containsKey(mapEntry.getKey())
 					&& dest_md5.get(mapEntry.getKey()).equals(mapEntry.getValue()))) {
 				
-				log.info(sourcePath + " and " + destPath + " is not same!");
+				log.info(sourcePath+mapEntry.getKey() + " and " + destPath+mapEntry.getKey() + " is not same!");
 				return 0;
 				// System.out.println(mapEntry.getKey());
 			}

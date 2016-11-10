@@ -122,11 +122,15 @@ public class CopyData {
 	public int createFolders(String folder) {
 		log.info("create " + folder);
 		String splitFolder[] = folder.substring(1).split("/");
-		String cmd = "mkdir ";
+		
+		String names="";
+		String name="";
 		for (String one : splitFolder) {
-			cmd += "/" + one.replaceAll(" ", "");
-			Constant.execCmdObject.execCmdWaitAcquiescent(cmd);
+			name=name+ "/" + one.trim();
+			names =names+" "+name;		
 		}
+		String cmd = "mkdir "+names;
+		Constant.execCmdObject.execCmdWaitAcquiescent(cmd);
 		return 1;
 	}
 

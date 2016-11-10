@@ -78,40 +78,45 @@ public class SshOperateData extends OperateData {
 	public int copyData(String sourceName,String destName,PostData resData) {
 		// TODO Auto-generated method stub
 		log.info("start copy data from "+sourceName+" to "+destName);
-		this.sourceName=sourceName;
-		this.destName=destName;
-		if(!isexistsFile(sourceName)){
-			String mess="7001 "+sourceName+" is not exists";
-			log.error(mess);
-			resData.pushExceptionsStack(mess);
-			return -1;
-		}
 		if(!destName.endsWith("/")){
 			destName=destName+"/";
 		}
 		if(sourceName.endsWith("/")){
 			sourceName=sourceName.substring(0, sourceName.length()-1);
 		}
-		this.sourceName=sourceName;
-		this.destName=destName;
+		destName=destName+sourceName.split("/")[sourceName.split("/").length-1];
+//		this.sourceName=sourceName;
+//		this.destName=destName;
+		if(!isexistsFile(sourceName)){
+			String mess="7001 "+sourceName+" is not exists";
+			log.error(mess);
+			resData.pushExceptionsStack(mess);
+			return -1;
+		}
+	
 		final TaskOperateData taskOperateData = new TaskOperateData(sourceName, destName);
 		Constant.copyDataTask.add(taskOperateData);
 		// TODO Auto-generated method stub
 		
-		final String name=sourceName.split("/")[sourceName.split("/").length-1];
-		taskOperateData.setName(name);
+		
 		/**
 		 * 目标文件或者文件夹已经存在
 		 */
-		if(!isexistsFile(this.destName+name)){
-			TaskOperateData removeExistsDestNametask = new TaskOperateData(this.destName+name);
+		if(isexistsFile(destName)){
+			TaskOperateData removeExistsDestNametask = new TaskOperateData(destName);
 			realRemove(removeExistsDestNametask);
 		}
-		new CopyData().createFolder(this.destName+name);
+//		new CopyData().createFolders(destName);
 		final Thread setProgress=new Thread(new Runnable() {
 			public void run() {
 				while(taskOperateData.getMoveThread().isAlive()){
-					long comepletedSize=getFolderSize(SshOperateData.this.destName+name);
+					try {
+						Thread.sleep(Constant.timeSetProgress);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					long comepletedSize=getFolderSize(taskOperateData.getDestPath());
 					if(comepletedSize<0){
 						log.error("获取文件夹大小失败");
 						continue;
@@ -119,12 +124,7 @@ public class SshOperateData extends OperateData {
 						taskOperateData.setCompletedSize(comepletedSize);
 					}
 					
-					try {
-						Thread.sleep(Constant.timeSetProgress);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					
 				}
 			}
 		});
@@ -151,7 +151,7 @@ public class SshOperateData extends OperateData {
 	public int removeData(String removeName,PostData resData) {
 		// TODO Auto-generated method stub
 		log.info("start remove "+removeName);
-		this.removeName=removeName;
+//		this.removeName=removeName;
 		if(!isexistsFile(removeName)){
 			
 			String mess="8001 "+removeName+" is not exists";
@@ -217,8 +217,8 @@ public class SshOperateData extends OperateData {
 	 */
 	public int realcopy(TaskOperateData taskOperateData) {
 
-		String sourceName = SshOperateData.this.sourceName;
-		String destName = SshOperateData.this.destName;
+		String sourceName = taskOperateData.getSourcePath();
+		String destName = taskOperateData.getDestPath();
 		long allsize = getFolderSize(sourceName);
 
 		if (allsize == -1) {
@@ -276,7 +276,7 @@ public class SshOperateData extends OperateData {
 	 */
 	public int realRemove(TaskOperateData taskOperateData) {
 
-		String removeName = SshOperateData.this.removeName;
+		String removeName = taskOperateData.getRemoveDataName();
 
 		/**
 		 * 文件删除

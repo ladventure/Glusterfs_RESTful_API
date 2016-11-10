@@ -63,7 +63,7 @@ public class TaskOperateData {
 	 */
 	private String sourcePath = null;
 	private String destPath = null;
-	private String name=null;
+	
 
 	/**
 	 * 删除任务数据
@@ -108,14 +108,14 @@ public class TaskOperateData {
 			if (taskReturn == 1) {
 
 				setStatus(2);
-				md5Return = new CheckoutMD5().checkoutMD5Folder(getSourcePath(), getDestPath()+"/"+getName());
+				md5Return = new CheckoutMD5().checkoutMD5Folder(getSourcePath(), getDestPath());
 			}
 
 			/**
 			 * 如果拷贝失败或者校验失败，则删除已经拷贝的数据
 			 */
 			if (taskReturn != 1 || md5Return != 1) {
-				GfsData.operateData.removeData(getDestPath()+"/"+getName(), new PostData());
+				GfsData.operateData.removeData(getDestPath(), new PostData());
 			}
 			int dataStatus = 0;
 			/**
@@ -267,7 +267,7 @@ public class TaskOperateData {
 		if (this.allSize == 0) {
 			setProgress(0);
 		} else {
-			setProgress((int) (this.completedSize * 100 / this.allSize));
+			setProgress((int)(Math.ceil(this.completedSize * 100 / this.allSize)));
 		}
 
 	}
@@ -317,17 +317,4 @@ public class TaskOperateData {
 		this.removeDataName = removeDataName;
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
 }

@@ -74,8 +74,8 @@ public class LocalOperateData extends OperateData {
 	 * @see [类、类#方法、类#成员]
 	 */
 	public int realcopy(TaskOperateData taskOperateData) {
-		String sourceName = LocalOperateData.this.sourceName;
-		String destName = LocalOperateData.this.destName;
+		String sourceName = taskOperateData.getSourcePath();
+		String destName = taskOperateData.getDestPath();
 		File sourceFile = new File(sourceName);
 		if (!sourceFile.exists()) {
 			/**
@@ -147,13 +147,22 @@ public class LocalOperateData extends OperateData {
 	 */
 	@Override
 	public int copyData(String sourceName, String destName, PostData resData) {
-		log.info("start copy data from "+sourceName+" to "+destName);
+		
 		if(sourceName.endsWith(File.separator)){
 			sourceName=sourceName.substring(0, sourceName.length()-1);
 		}
-		this.sourceName = sourceName;
-		this.destName = destName;
-		
+		if(!destName.endsWith(File.separator)){
+			destName=destName+File.separator;
+		}
+		String splitStr=File.separator;
+		if(File.separator.equals("\\")){
+			splitStr=splitStr+File.separator;
+		}
+		String name=sourceName.split(splitStr)[sourceName.split(splitStr).length-1];
+		destName=destName+name;
+//		this.sourceName = sourceName;
+//		this.destName = destName;
+		log.info("start copy data from "+sourceName+" to "+destName);
 		if (!isexistsFile(sourceName)) {
 			String mess = "7002 " + sourceName + " is not exists";
 			log.error(mess);
@@ -164,8 +173,7 @@ public class LocalOperateData extends OperateData {
 		Constant.copyDataTask.add(taskOperateData);
 		// TODO Auto-generated method stub
 		
-		String name=sourceName.split("/")[sourceName.split("/").length-1];
-		taskOperateData.setName(name);
+		
 		Thread copyDataThread = new Thread(new Runnable() {
 			public void run() {
 				int copyTaskReturn = LocalOperateData.this.realcopy(taskOperateData);
@@ -328,7 +336,7 @@ public class LocalOperateData extends OperateData {
 	public int removeData(String removeName, PostData resData) {
 		// TODO Auto-generated method stub
 		log.info("start remove "+removeName);
-		this.removeName = removeName;
+//		this.removeName = removeName;
 		if (!isexistsFile(removeName)) {
 			String mess = "7001 " + removeName + " is not exists";
 			log.error(mess);
@@ -413,7 +421,9 @@ public class LocalOperateData extends OperateData {
 	public boolean deleteDirectory(String dir) {
 		// 如果dir不以文件分隔符结尾，自动添加文件分隔符
 		if (!dir.endsWith(File.separator))
+			{
 			dir = dir + File.separator;
+			}
 		File dirFile = new File(dir);
 		// 如果dir对应的文件不存在，或者不是一个目录，则退出
 		if ((!dirFile.exists()) || (!dirFile.isDirectory())) {
@@ -451,7 +461,12 @@ public class LocalOperateData extends OperateData {
 	}
 
 	public static void main(String[] args) {
-		String name = "E:\\迅雷下载\\Qiyi";
+		String destName = "E:\\迅雷下载\\Qiyi";
+		String sourceName = "E:\\360Downloads\\Software";
+//		String strsplit=File.separator;
+//		String names[]=sourceName.split(":");
+//		System.out.println(names);
 		// new LocalOperateData().removeData(name);
+		new LocalOperateData().copyData(sourceName, destName, new PostData());
 	}
 }
