@@ -1,4 +1,4 @@
-package com.platform.glusterfs;
+package com.platform.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import com.platform.utils.Constant;
+import com.platform.utils.GanymedSSH;
 
 public class CheckoutMD5 {
 	public static Logger log = Logger.getLogger(CheckoutMD5.class);
@@ -77,7 +78,7 @@ public class CheckoutMD5 {
 		}
 		for (String line : destReStrings) {
 			String[] lines = line.split("  ");
-			String key = lines[1].replace(destPath, "").trim();
+ 			String key = lines[1].replace(destPath, "").trim();
 			String value = lines[0].trim();
 			dest_md5.put(key, value);
 		}
@@ -98,6 +99,7 @@ public class CheckoutMD5 {
 
 	public static void main(String[] args) {
 		CheckoutMD5 checkoutMD5 = new CheckoutMD5();
+		Constant.execCmdObject = new GanymedSSH(Constant.hostIp, Constant.rootUser, Constant.rootPasswd, Constant.port);
 		System.out.println(checkoutMD5.checkoutMD5Folder("/home/v1_copy","/home/ubuntu"));
 	}
 }

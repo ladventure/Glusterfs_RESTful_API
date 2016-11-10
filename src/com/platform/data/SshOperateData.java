@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import com.jfinal.core.Const;
 import com.platform.entities.PostData;
+import com.platform.glusterfs.CopyData;
 import com.platform.utils.Constant;
 import com.platform.utils.GanymedSSH;
 
@@ -76,6 +77,7 @@ public class SshOperateData extends OperateData {
 	@Override
 	public int copyData(String sourceName,String destName,PostData resData) {
 		// TODO Auto-generated method stub
+		log.info("start copy data from "+sourceName+" to "+destName);
 		this.sourceName=sourceName;
 		this.destName=destName;
 		if(!isexistsFile(sourceName)){
@@ -97,17 +99,16 @@ public class SshOperateData extends OperateData {
 		// TODO Auto-generated method stub
 		
 		final String name=sourceName.split("/")[sourceName.split("/").length-1];
-		Thread copyDataThread = new Thread(new Runnable() {
-			public void run() {
-				int status = SshOperateData.this.realcopy(taskOperateData);
-				taskOperateData.setTaskReturn(status);
-				taskOperateData.taskFinished();
-			}
-		});
-		taskOperateData.setMoveThread(copyDataThread);
-		copyDataThread.start();
-		
-		Thread setProgress=new Thread(new Runnable() {
+		taskOperateData.setName(name);
+		/**
+		 * 目标文件或者文件夹已经存在
+		 */
+		if(!isexistsFile(this.destName+name)){
+			TaskOperateData removeExistsDestNametask = new TaskOperateData(this.destName+name);
+			realRemove(removeExistsDestNametask);
+		}
+		new CopyData().createFolder(this.destName+name);
+		final Thread setProgress=new Thread(new Runnable() {
 			public void run() {
 				while(taskOperateData.getMoveThread().isAlive()){
 					long comepletedSize=getFolderSize(SshOperateData.this.destName+name);
@@ -128,6 +129,16 @@ public class SshOperateData extends OperateData {
 			}
 		});
 		
+		Thread copyDataThread = new Thread(new Runnable() {
+			public void run() {
+				int copyStatus = SshOperateData.this.realcopy(taskOperateData);
+				log.info("copy data finished ");
+				setProgress.stop();
+				taskOperateData.taskFinished(copyStatus);	
+			}
+		});
+		taskOperateData.setMoveThread(copyDataThread);
+		copyDataThread.start();	
 		setProgress.start();
 		return 1;
 
@@ -139,6 +150,7 @@ public class SshOperateData extends OperateData {
 	@Override
 	public int removeData(String removeName,PostData resData) {
 		// TODO Auto-generated method stub
+		log.info("start remove "+removeName);
 		this.removeName=removeName;
 		if(!isexistsFile(removeName)){
 			
@@ -153,9 +165,9 @@ public class SshOperateData extends OperateData {
 
 		Thread removeDataThread = new Thread(new Runnable() {
 			public void run() {
-				int status = SshOperateData.this.realRemove(taskOperateData);
-				taskOperateData.setTaskReturn(status);
-				taskOperateData.taskFinished();
+				int removeStatus = SshOperateData.this.realRemove(taskOperateData);
+				log.info("remove data finished");
+				taskOperateData.taskFinished(removeStatus);
 			}
 		});
 		taskOperateData.setMoveThread(removeDataThread);

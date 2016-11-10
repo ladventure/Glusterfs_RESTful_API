@@ -32,6 +32,7 @@ import net.sf.json.JSONObject;
  */
 
 public abstract class OperateData {
+	public Logger log =   Logger.getLogger ( OperateData.class); 
 	protected String sourceName;
 	protected String destName;
 	protected String removeName;
@@ -57,7 +58,7 @@ public abstract class OperateData {
 //		this.destName=destName;
 //		this.sourceName=sourceName;
 //	}
-	public Logger log =   Logger.getLogger ( OperateData.class); 
+	
 	/**
 	 * 判断文件是否存在
 	 * <一句话功能简述>

@@ -18,6 +18,8 @@ import javax.xml.bind.helpers.ValidationEventImpl;
 
 import org.junit.Test;
 
+import com.platform.data.SshOperateData;
+
 /**
  * <一句话功能简述> <功能详细描述>
  * 
@@ -63,7 +65,7 @@ public class SomeFunctionsTest {
 
 //	@Test
 	public void urlEndecodeTest() {
-		String src = "/home/jdk-8u101-linux-x64@tar@gz";
+		String src = "/home/FTP_GFS_point/";
 		try {
 			String dst_utf8 = URLEncoder.encode(src, "utf-8");
 			System.out.println(dst_utf8);
@@ -76,5 +78,28 @@ public class SomeFunctionsTest {
 
 	}
 	
-//	public
+	@Test
+	public void threadStopTest(){
+		Thread newThread=new Thread(new Runnable() {
+			public void run() {
+				while(true){
+					System.out.println(1);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		newThread.start();
+		try {
+			Thread.sleep(5*1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		newThread.stop();
+	}
 }

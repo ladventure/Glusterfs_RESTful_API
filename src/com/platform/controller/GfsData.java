@@ -34,7 +34,7 @@ import net.sf.json.JsonConfig;
  */
 
 public class GfsData extends Controller {
-	OperateData operateData;
+	public static OperateData operateData;
 
 	/**
 	 * <一句话功能简述> <功能详细描述>

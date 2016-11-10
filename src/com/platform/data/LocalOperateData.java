@@ -37,21 +37,21 @@ import com.platform.utils.Constant;
  */
 @RunWith(Parameterized.class)
 public class LocalOperateData extends OperateData {
-//	/**
-//	 * <一句话功能简述> <功能详细描述>
-//	 * 
-//	 * @see [类、类#方法、类#成员]
-//	 */
-//	public LocalOperateData(String sourceName, String destName) {
-//		// TODO Auto-generated constructor stub
-//		super(sourceName, destName);
-//
-//	}
-//	public LocalOperateData(String removeName) {
-//		// TODO Auto-generated constructor stub
-//		super(removeName);
-//
-//	}
+	// /**
+	// * <一句话功能简述> <功能详细描述>
+	// *
+	// * @see [类、类#方法、类#成员]
+	// */
+	// public LocalOperateData(String sourceName, String destName) {
+	// // TODO Auto-generated constructor stub
+	// super(sourceName, destName);
+	//
+	// }
+	// public LocalOperateData(String removeName) {
+	// // TODO Auto-generated constructor stub
+	// super(removeName);
+	//
+	// }
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -146,11 +146,16 @@ public class LocalOperateData extends OperateData {
 	 * java.lang.String)
 	 */
 	@Override
-	public int copyData(String sourceName,String destName,PostData resData) {
-		this.sourceName=sourceName;
-		this.destName=destName;
-		if(!isexistsFile(sourceName)){
-			String mess="7002 "+sourceName+" is not exists";
+	public int copyData(String sourceName, String destName, PostData resData) {
+		log.info("start copy data from "+sourceName+" to "+destName);
+		if(sourceName.endsWith(File.separator)){
+			sourceName=sourceName.substring(0, sourceName.length()-1);
+		}
+		this.sourceName = sourceName;
+		this.destName = destName;
+		
+		if (!isexistsFile(sourceName)) {
+			String mess = "7002 " + sourceName + " is not exists";
 			log.error(mess);
 			resData.pushExceptionsStack(mess);
 			return -1;
@@ -158,12 +163,14 @@ public class LocalOperateData extends OperateData {
 		final TaskOperateData taskOperateData = new TaskOperateData(sourceName, destName);
 		Constant.copyDataTask.add(taskOperateData);
 		// TODO Auto-generated method stub
-
+		
+		String name=sourceName.split("/")[sourceName.split("/").length-1];
+		taskOperateData.setName(name);
 		Thread copyDataThread = new Thread(new Runnable() {
 			public void run() {
-				int status = LocalOperateData.this.realcopy(taskOperateData);
-				taskOperateData.setTaskReturn(status);
-				taskOperateData.taskFinished();
+				int copyTaskReturn = LocalOperateData.this.realcopy(taskOperateData);
+				log.info("copy data finished ");
+				taskOperateData.taskFinished(copyTaskReturn);				
 			}
 		});
 		taskOperateData.setMoveThread(copyDataThread);
@@ -291,7 +298,8 @@ public class LocalOperateData extends OperateData {
 	public void copyDataTest() {
 		final String sourcePath = "E:\\Movies\\[电影天堂www.dy2018.com]机械师2：复活HD韩版高清中字.mkv";
 		final String destPath = "E:\\迅雷下载\\Qiyi\\Offline";
-//		System.out.println(new LocalOperateData().copyData(sourcePath, destPath));
+		// System.out.println(new LocalOperateData().copyData(sourcePath,
+		// destPath));
 		while (true) {
 
 			if (Constant.copyDataTask.size() == 0) {
@@ -317,11 +325,12 @@ public class LocalOperateData extends OperateData {
 	 * @see com.platform.data.OperateData#removeData()
 	 */
 	@Override
-	public int removeData(String removeName,PostData resData) {
+	public int removeData(String removeName, PostData resData) {
 		// TODO Auto-generated method stub
-		this.removeName=removeName;
-		if(!isexistsFile(removeName)){
-			String mess="7001 "+removeName+" is not exists";
+		log.info("start remove "+removeName);
+		this.removeName = removeName;
+		if (!isexistsFile(removeName)) {
+			String mess = "7001 " + removeName + " is not exists";
 			log.error(mess);
 			resData.pushExceptionsStack(mess);
 			return -1;
@@ -332,10 +341,9 @@ public class LocalOperateData extends OperateData {
 
 		Thread removeDataThread = new Thread(new Runnable() {
 			public void run() {
-				int status = LocalOperateData.this.realRemove(taskOperateData);
-				
-				taskOperateData.setTaskReturn(status);
-				taskOperateData.taskFinished();
+				int removeStatus = LocalOperateData.this.realRemove(taskOperateData);
+				log.info("remove data finished");
+				taskOperateData.taskFinished(removeStatus);
 			}
 		});
 		taskOperateData.setMoveThread(removeDataThread);
@@ -344,38 +352,33 @@ public class LocalOperateData extends OperateData {
 	}
 
 	/**
-	 * 删除数据程序 -1：表示源文件或者文件夹不存在，-2：表示删除文件夹失败，1：表示删除成功
-	 * <一句话功能简述>
-	 * <功能详细描述>
+	 * 删除数据程序 -1：表示源文件或者文件夹不存在，-2：表示删除文件夹失败，1：表示删除成功 <一句话功能简述> <功能详细描述>
+	 * 
 	 * @param taskOperateData
 	 * @return
 	 * @see [类、类#方法、类#成员]
 	 */
-	public int realRemove(TaskOperateData taskOperateData){
-		String fileName=taskOperateData.getRemoveDataName();
-		File file=new File(fileName);
-		if(!file.exists()){
+	public int realRemove(TaskOperateData taskOperateData) {
+		String fileName = taskOperateData.getRemoveDataName();
+		File file = new File(fileName);
+		if (!file.exists()) {
 			return -1;
 		}
-		if(file.isDirectory()){
-			if(deleteDirectory(fileName))
-			{
+		if (file.isDirectory()) {
+			if (deleteDirectory(fileName)) {
 				return 1;
-			}
-			else {
+			} else {
 				return -2;
 			}
-		}
-		else {
-			if(deleteFile(fileName))
-			{
+		} else {
+			if (deleteFile(fileName)) {
 				return 1;
-			}
-			else {
+			} else {
 				return -2;
 			}
 		}
 	}
+
 	/**
 	 * 删除单个文件
 	 * 
@@ -449,6 +452,6 @@ public class LocalOperateData extends OperateData {
 
 	public static void main(String[] args) {
 		String name = "E:\\迅雷下载\\Qiyi";
-//		new LocalOperateData().removeData(name);
+		// new LocalOperateData().removeData(name);
 	}
 }

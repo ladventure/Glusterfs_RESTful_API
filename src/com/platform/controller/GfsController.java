@@ -53,7 +53,7 @@ public class GfsController extends Controller {
 	 * 返回所有volume信息和volume数据
 	 * @see [类、类#方法、类#成员]
 	 */
-	public void getAllvolume() {
+	public void getAllVolume() {
 		JSONObject jsondata = null;
 		try {
 			new VolumeInfo().controllerGetAllvolumeInfo(Constant.timeout);
@@ -82,7 +82,7 @@ public class GfsController extends Controller {
 	 * 
 	 * @see [类、类#方法、类#成员]
 	 */
-	public void getAllvolumeInfo() {
+	public void getAllVolumeInfo() {
 		try {
 
 			MyThread myThread1 = new MyThread(new VolumeInfo(), "setAllVolumeInfo", Constant.allVolumeInfo);
@@ -144,7 +144,7 @@ public class GfsController extends Controller {
 	public void getOneVolumeInfo() {
 		VolumeEntity onEntity = null;
 		try {
-			String volumeName = getPara(0, "");
+			String volumeName = getPara();
 			MyThread myThread1 = new MyThread(new VolumeInfo(), "setAllVolumeInfo", Constant.allVolumeInfo);
 			MyThread myThread2 = new MyThread(new VolumeInfo(), "setAllVolumeDf", Constant.allVolumeInfo);
 

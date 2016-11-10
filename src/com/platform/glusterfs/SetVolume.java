@@ -125,7 +125,7 @@ public class SetVolume {
 
 	/**
 	 * 删除volume 1 表示成功 ；-1表示volume name不存在；-2表示volume 不在停止状态不能删除；
-	 * -3表示删除失败，-4表示/gfsAutoMount/mountPoint.record文件不存在;-5表示其他错误
+	 * -3表示删除失败，-4表示Constant.MountRecordPath文件不存在;-5表示其他错误
 	 * 
 	 * @param volumeName
 	 * @return

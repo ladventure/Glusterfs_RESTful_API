@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.platform.data.CheckoutMD5;
 import com.platform.entities.Brick;
 import com.platform.entities.FolderNode;
 import com.platform.entities.VolumeEntity;
-import com.platform.glusterfs.CheckoutMD5;
 import com.platform.glusterfs.ClusterInfo;
 import com.platform.glusterfs.GetTreeData;
 import com.platform.glusterfs.VolumeInfo;

@@ -52,7 +52,6 @@ import com.platform.utils.MyThread;
 public class JfinalConfig extends JFinalConfig{
 	@Override
 	public void configConstant(Constants me) {
-		System.out.println(getClass().getResource("").toString());
 		PropKit.use("a_little_config.txt");
 		me.setDevMode(PropKit.getBoolean("devMode", false));
 		Constant.hostIp=PropKit.get("hostIp");
