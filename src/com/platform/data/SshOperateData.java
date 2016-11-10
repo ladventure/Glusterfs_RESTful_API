@@ -228,18 +228,18 @@ public class SshOperateData extends OperateData {
 			log.debug("源文件或者文件夹不存在");
 			return -1;
 		}
-		/**
-		 * 创建目标文件夹失败
-		 */
-		String name=sourceName.split("/")[sourceName.split("/").length-1];
-		if(createFolders(destName,name)!=1){
-			log.debug("目标文件夹创建失败");
-			return -2;
-		}
-
-		if (!destName.endsWith("/")) {
-			destName = destName + "/";
-		}
+//		/**
+//		 * 创建目标文件夹失败
+//		 */
+//		String name=sourceName.split("/")[sourceName.split("/").length-1];
+//		if(createFolders(destName,name)!=1){
+//			log.debug("目标文件夹创建失败");
+//			return -2;
+//		}
+//
+//		if (!destName.endsWith("/")) {
+//			destName = destName + "/";
+//		}
 
 		/**
 		 * 设置文件夹总大小
